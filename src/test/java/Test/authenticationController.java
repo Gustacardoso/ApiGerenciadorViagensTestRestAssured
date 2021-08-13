@@ -1,8 +1,10 @@
 package Test;
 
 import Dados.Authentication;
+import Dados.Data;
 import Utils.BaseApi;
 import org.apache.http.HttpStatus;
+import org.junit.Test;
 
 import java.util.Map;
 
@@ -13,6 +15,7 @@ public class authenticationController extends BaseApi {
     Authentication authentication = new Authentication();
     Map dadosAuthenticationAdmin = authentication.DadosAuthenticationAdmin();
     Map dadosAuthenticationUser = authentication.DadosAuthenticationUser();
+
     public String authenticationControllerAdmin(){
 
       String tokenAdmin =
@@ -29,6 +32,13 @@ public class authenticationController extends BaseApi {
                 .path("data.token");
 
         return tokenAdmin;
+    }
+
+    @Test
+    public void jj(){
+        Data dados = new Data();
+        String id = dados.returnId();
+        System.out.println("te:::" +id);
     }
 
     public String authenticationControllerUser(){

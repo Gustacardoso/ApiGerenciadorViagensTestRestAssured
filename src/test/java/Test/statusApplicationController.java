@@ -8,7 +8,7 @@ import org.junit.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
-public class statusAplicacaoController {
+public class statusApplicationController {
     @Test
     public void statusAplicacaoController(){
         given()

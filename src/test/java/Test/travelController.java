@@ -1,28 +1,24 @@
 package Test;
 
-import Dados.Dados;
+import Dados.Data;
 import Utils.BaseApi;
 import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
-import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.net.HttpCookie;
 import java.util.Map;
-import java.util.HashMap;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
-public class gerenciadorViagemController extends BaseApi {
+public class travelController extends BaseApi {
 
     String tokenAdmin = new authenticationController().authenticationControllerAdmin();
     String tokenUser = new authenticationController().authenticationControllerUser();
-    Dados dados = new Dados();
-    Map dadosViagem = dados.dadosViagem();
-    Map dadosViagemUpdate = dados.dadosViagemUpdate();
-
+    Data dadaTravel = new Data();
+    Map dadosViagem = dadaTravel.dadaTravel();
 
     @Test
     public void postViagens() {
@@ -36,6 +32,7 @@ public class gerenciadorViagemController extends BaseApi {
                 .then()
                 .statusCode(HttpStatus.SC_CREATED);
     }
+
     @Test
     public void getViagens(){
         given()
@@ -48,34 +45,36 @@ public class gerenciadorViagemController extends BaseApi {
                 .log().all()
                 .statusCode(HttpStatus.SC_OK);
     }
+
     @Test
     public void putViagensId() {
-       int id = 2;
                  given()
                     .contentType("application/json")
                 .header("Authorization",tokenAdmin)
-                    .body(dadosViagemUpdate)
+                    .body(dadosViagem)
                 .when()
-                    .put("/v1/viagens/"+id)
+                    .put("/v1/viagens/"+ dadaTravel.returnId())
                 .then()
                     .log().all()
                     .statusCode(HttpStatus.SC_NO_CONTENT);
                  validarUpdateName();
 
     }
+
     @Test
     public void deleteViagensId(){
-        int id = 1;
         given()
                 .log().all()
                     .contentType("application/json")
                 .header("Authorization", tokenAdmin)
                     .when()
-                .delete("/v1/viagens/"+id)
+                .delete("/v1/viagens/"+dadaTravel.returnId())
                 .then()
                 .statusCode(HttpStatus.SC_NO_CONTENT);
         validarViagensIdDeletado();
+
     }
+
     @Test
      public  void validarViagensIdDeletado(){
                given()
@@ -92,7 +91,7 @@ public class gerenciadorViagemController extends BaseApi {
     }
     @Test
     public  void validarUpdateName(){
-        String name = given()
+        given()
                 .log().all()
                 .contentType("application/json")
                 .header("Authorization", tokenUser)
@@ -101,11 +100,8 @@ public class gerenciadorViagemController extends BaseApi {
                 .then()
                 .log().body()
                 .statusCode(HttpStatus.SC_OK)
-                .extract().path("data[0].acompanhante");
-        Assert.assertThat(name, Matchers.is("Mario"));
+                ;
 
     }
-
-
 
 }
