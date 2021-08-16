@@ -21,7 +21,7 @@ public class travelController extends BaseApi {
     Map dadosViagem = dadaTravel.dadaTravel();
 
     @Test
-    public void postViagens() {
+    public void postTravel() {
 
         given()
                 .header("Authorization", tokenAdmin)
@@ -34,7 +34,19 @@ public class travelController extends BaseApi {
     }
 
     @Test
-    public void getViagens(){
+    public void getTravel(){
+        given()
+                .log().all()
+                .contentType("application/json")
+                .header("Authorization", tokenUser)
+                .when()
+                .get("v1/viagens")
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.SC_OK);
+    }
+    @Test
+    public void getTravelId(){
         given()
                 .log().all()
                 .contentType("application/json")
@@ -47,22 +59,23 @@ public class travelController extends BaseApi {
     }
 
     @Test
-    public void putViagensId() {
-                 given()
+    public void putTravelId() {
+             given()
                     .contentType("application/json")
                 .header("Authorization",tokenAdmin)
                     .body(dadosViagem)
                 .when()
-                    .put("/v1/viagens/"+ dadaTravel.returnId())
+                    .put("v1/viagens/1")
                 .then()
                     .log().all()
-                    .statusCode(HttpStatus.SC_NO_CONTENT);
-                 validarUpdateName();
+                    .statusCode(HttpStatus.SC_NO_CONTENT)
+                     .body(Matchers.notNullValue());
+
 
     }
 
     @Test
-    public void deleteViagensId(){
+    public void deleteTravelId(){
         given()
                 .log().all()
                     .contentType("application/json")
@@ -71,12 +84,12 @@ public class travelController extends BaseApi {
                 .delete("/v1/viagens/"+dadaTravel.returnId())
                 .then()
                 .statusCode(HttpStatus.SC_NO_CONTENT);
-        validarViagensIdDeletado();
+        validateTravelIdDeletado();
 
     }
 
     @Test
-     public  void validarViagensIdDeletado(){
+     public  void validateTravelIdDeletado(){
                given()
                 .log().all()
                 .contentType("application/json")
@@ -90,17 +103,28 @@ public class travelController extends BaseApi {
 
     }
     @Test
-    public  void validarUpdateName(){
+    public  void validateUpdateName(){
+        String id = dadaTravel.returnId();
+        given()
+                .contentType("application/json")
+                .header("Authorization",tokenAdmin)
+                .body(dadosViagem)
+                .when()
+                .put("v1/viagens/"+id)
+                .then()
+                .log().all()
+                .statusCode(HttpStatus.SC_NO_CONTENT);
         given()
                 .log().all()
                 .contentType("application/json")
                 .header("Authorization", tokenUser)
                 .when()
+                //get com id nao retorna
                 .get("v1/viagens")
                 .then()
                 .log().body()
-                .statusCode(HttpStatus.SC_OK)
-                ;
+                .statusCode(HttpStatus.SC_OK);
+
 
     }
 
